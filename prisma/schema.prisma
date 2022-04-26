@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TransactionData {
+  id                  String      @id @default(cuid())
+
+  //Hexadecimal value of the OP_RETURN DATA
+  hexData             String
+
+  //Plain text of the OP_RETURN DATA
+  plainData           String 
+
+  //Transaction hash of the associated transaction    
+  transactionHash     String 
+
+  //Block hash of the associated transaction's block
+  blockHash           String    
+  
+  active              Boolean     @default(false)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  @@map("transaction_data")
+}
