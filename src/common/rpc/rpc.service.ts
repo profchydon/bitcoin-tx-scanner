@@ -27,12 +27,12 @@ export class RpcService {
      * So 87571 blocks will be proccessed in a batch of ${chunkSize} each
      * That is, 2000 records in each batch.
      */
-    const chunkSize = 50;
+    const chunkSize = 10;
 
     let start = 0;
 
     // const chunks = Math.ceil(response.result / chunkSize);
-    const chunks = Math.ceil(200 / chunkSize);
+    const chunks = Math.ceil(10 / chunkSize);
 
     for (let i = 0; i < chunks; i++) {
       const heightRange = [...Array(chunkSize).keys()].map((x) => x + start);
@@ -42,9 +42,5 @@ export class RpcService {
 
       start = chunkSize * (i + 1);
     }
-  };
-
-  getRawTxs = async (heightRange) => {
-    return await this.getRawTx.handle(heightRange);
   };
 }
