@@ -40,38 +40,43 @@ export class GetRawTxHandler {
 
         const { result } = block.unwrap();
 
-        const { vout } = result.tx[0];
+        Array(result).forEach((rawTxs) => {
+          Array(rawTxs).forEach((rawTx) => {
+            const { vout, txid, hash } = rawTx.tx[0];
 
-        console.log(vout);
-        
+            vout.forEach(async (value) => {
+              // console.log(value);
 
-        vout.forEach(async (value) => {
-          if (value.scriptPubKey.asm.includes('OP_RETURN')) {
-            const strippedAsm = value.scriptPubKey.asm.replace(
-              'OP_RETURN ',
-              '',
-            );
+              if (value.scriptPubKey.asm.includes('OP_RETURN')) {
+                const strippedAsm = value.scriptPubKey.asm.replace(
+                  'OP_RETURN ',
+                  '',
+                );
 
-            const convert = (from, to) => (str) =>
-              Buffer.from(str, from).toString(to);
+                const convert = (from, to) => (str) =>
+                  Buffer.from(str, from).toString(to);
 
-            const hexToUtf8 = convert('hex', 'utf8');
+                const hexToUtf8 = convert('hex', 'utf8');
 
-            const plainData = hexToUtf8(strippedAsm);
+                const plainData = hexToUtf8(strippedAsm);
 
-            const data = {
-              hexData: strippedAsm,
-              transactionHash: result.tx[0].txid,
-              plainData,
-              blockHash: result.tx[0].hash,
-            };
+                const data = {
+                  hexData: strippedAsm,
+                  transactionHash: txid,
+                  plainData,
+                  blockHash: hash,
+                };
 
-            const saveData = await this.saveTransaction.handle(data);
+                const saveData = await this.saveTransaction.handle(data);
 
-            if (saveData.isErr) this.logger.error({ GET_RAW_TX_ERROR: data });
+                if (saveData.isErr)
+                  this.logger.error({ GET_RAW_TX_ERROR: data });
 
-            if (saveData.isOk) return Result.ok(saveData);
-          }
+                if (saveData.isOk) return Result.ok(saveData);
+              }
+              
+            });
+          });
         });
       });
     } catch (error) {

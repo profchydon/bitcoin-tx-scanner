@@ -9,6 +9,7 @@ import { SaveTransactionHandler } from './handlers/save-transaction.handle';
 import { GetRawTxHandler } from './handlers/get-raw-tx.handler';
 import { GetBlockCountHandler } from './handlers/get-block-count.handler';
 import { InitialSyncHandler } from './handlers/initial-sync.handler';
+import { DecodeRawTxHandler } from './handlers/decode-raw-tx-handler';
 
 @Module({
   imports: [PrismaModule],
@@ -19,6 +20,7 @@ import { InitialSyncHandler } from './handlers/initial-sync.handler';
     GetBlockHandler,
     SaveTransactionHandler,
     InitialSyncHandler,
+    DecodeRawTxHandler,
     RpcService,
     Logger,
     {
@@ -26,6 +28,6 @@ import { InitialSyncHandler } from './handlers/initial-sync.handler';
       useValue: RpcConfig,
     },
   ],
-  exports: [RpcService],
+  exports: [RpcService, DecodeRawTxHandler, SaveTransactionHandler],
 })
 export class RpcModule {}
