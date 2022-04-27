@@ -1,12 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { RpcService } from './../common/rpc/rpc.service';
-import { IResponse } from './../common/rpc/interfaces/response.interface';
+import { RpcService } from '../../common/rpc/rpc.service';
 
 @Controller('opreturn')
 export class TransactionController {
   constructor(private readonly rpcService: RpcService) {}
 
-  @Get()
+  @Get('sync')
   async triggerInitialSync() {
     try {
       const response = await this.rpcService.initialSync();

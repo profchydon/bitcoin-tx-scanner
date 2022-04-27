@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IResponse } from './interfaces/response.interface';
-import { GetBlockCountHandler } from './handlers/get-block-count.handler';
-import { GetRawTxHandler } from './handlers/get-raw-tx.handler';
+import { IResponse } from './../interfaces/response.interface';
+import { GetBlockCountHandler } from './../handlers/get-block-count.handler';
+import { GetRawTxHandler } from './../handlers/get-raw-tx.handler';
 
 @Injectable()
-export class RpcService {
+export class InitialSyncHandler {
   constructor(
     private getBlockCount: GetBlockCountHandler,
     private getRawTx: GetRawTxHandler,
@@ -27,24 +27,19 @@ export class RpcService {
      * So 87571 blocks will be proccessed in a batch of ${chunkSize} each
      * That is, 2000 records in each batch.
      */
-    const chunkSize = 50;
+    const chunkSize = 5;
 
     let start = 0;
 
     // const chunks = Math.ceil(response.result / chunkSize);
-    const chunks = Math.ceil(200 / chunkSize);
+    const chunks = Math.ceil(50 / chunkSize);
 
     for (let i = 0; i < chunks; i++) {
       const heightRange = [...Array(chunkSize).keys()].map((x) => x + start);
 
-      // setInterval(await this.getRawTxs(heightRange), [2000]);
-      await this.getRawTx.handle(heightRange);
+      const blocks = await this.getRawTx.handle(heightRange);
 
       start = chunkSize * (i + 1);
     }
-  };
-
-  getRawTxs = async (heightRange) => {
-    return await this.getRawTx.handle(heightRange);
   };
 }
