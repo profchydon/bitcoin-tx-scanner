@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configService } from './config/config.service';
 import { RpcModule } from './common/rpc/rpc.module';
-import { TransactionModule } from './transaction/transaction.module';
+import { TransactionModule } from './features/transaction/transaction.module';
 
 @Module({
   imports: [
