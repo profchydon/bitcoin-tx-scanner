@@ -37,7 +37,7 @@ export class InitialSyncHandler {
     for (let i = 0; i < chunks; i++) {
       const heightRange = [...Array(chunkSize).keys()].map((x) => x + start);
 
-      const blocks = await this.getRawTx.handle(heightRange);
+      // const blocks = await this.getRawTx.handle(heightRange);
 
       start = chunkSize * (i + 1);
     }

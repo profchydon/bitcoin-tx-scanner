@@ -16,7 +16,6 @@ export class TransactionController {
       const response = await this.rpcService.initialSync();
     } catch (error) {}
   }
-
   @Get(':opReturnData')
   @UseInterceptors(ResponseInterceptor)
   async getTransactions(@Param('opReturnData') opReturnData: string) {
