@@ -27,8 +27,10 @@ export class GetRawTxHandler {
    * @param {Array} heightRange Array containing a range of block heights
    * @return {object} response
    */
-  handle = (heightRange) => {
+  handle = (range) => {
     try {
+      const { heightRange } = range;
+
       heightRange.forEach(async (height) => {
         const response = await this.getBlockHash.handle(height);
 

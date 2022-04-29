@@ -10,9 +10,16 @@ import { GetRawTxHandler } from './handlers/get-raw-tx.handler';
 import { GetBlockCountHandler } from './handlers/get-block-count.handler';
 import { InitialSyncHandler } from './handlers/initial-sync.handler';
 import { DecodeRawTxHandler } from './handlers/decode-raw-tx-handler';
+import { BullModule } from '@nestjs/bull';
+import { RpcProcessor } from './rpc.processor';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [
+    PrismaModule,
+    BullModule.registerQueue({
+      name: 'rpc',
+    }),
+  ],
   providers: [
     GetBlockCountHandler,
     GetRawTxHandler,
@@ -23,6 +30,7 @@ import { DecodeRawTxHandler } from './handlers/decode-raw-tx-handler';
     DecodeRawTxHandler,
     RpcService,
     Logger,
+    RpcProcessor,
     {
       provide: RPC_CONFIG,
       useValue: RpcConfig,
