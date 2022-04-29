@@ -18,30 +18,42 @@ export class SubscriberService {
     this.listener();
   }
 
+  /**
+   * Listen for new trasactions on the blockchain
+   * If a transaction contains OP_RETURN opcode
+   * Transaction data is stored in the DB
+   */
   listener() {
     this.sock.on('message', async (topic, message) => {
+      //Listenen for rawTx topic
       if (topic.toString() === 'rawtx') {
         // Message is a buffer. But we want it as a hex string.
         const rawTx = message.toString('hex');
 
+        //Decode raw transaction
         const response: any = await this.decodeRawTx.handle(rawTx);
 
+        // Log if error occurs
         if (response.isErr)
           this.logger.error({ SUBSCRIBER_ERROR_DECODE_RAW_TX: rawTx });
 
         const { result } = response.unwrap();
 
-        // console.log(result);
-
         const { vout, txid, hash } = result;
 
+        /**
+         * Process each output individually
+         * For a transaction output, we check if it contains OP_RETURN opcode
+         */
         vout.forEach(async (value) => {
           if (value.scriptPubKey.asm.includes('OP_RETURN')) {
+            // Remove OP_RETURN string from the OP_RETURN hex
             const strippedAsm = value.scriptPubKey.asm.replace(
               'OP_RETURN ',
               '',
             );
 
+            // Convert hex to string
             const convert = (from, to) => (str) =>
               Buffer.from(str, from).toString(to);
 
