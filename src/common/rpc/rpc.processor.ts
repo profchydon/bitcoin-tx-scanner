@@ -7,17 +7,24 @@ import { GetRawTxHandler } from './handlers/get-raw-tx.handler';
 export class RpcProcessor {
   private readonly logger = new Logger(RpcProcessor.name);
 
-  constructor(private getRawTx: GetRawTxHandler) {}
+  constructor(
+    /**
+     * Handler to get the raw transactions for a block
+     */
+    private getRawTx: GetRawTxHandler,
+  ) {}
 
   @Process('sync')
   async handle(job: Job) {
-
-    
     this.logger.debug('Sync intiated...');
 
-    await this.getRawTx.handle(job.data);
+    /**
+     * For a given range of block heights, get the raw transactions for each block
+     */
+    setTimeout(() => {
+      this.getRawTx.handle(job.data);
+    }, 30000);
 
     this.logger.debug('Sync end.');
-
   }
 }
